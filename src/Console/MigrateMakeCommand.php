@@ -43,13 +43,12 @@ class MigrateMakeCommand extends \Illuminate\Database\Console\Migrations\Migrate
      */
     protected function getMigrationPath()
     {
-        $targetPath = $this->input->getOption('path');
         if (!is_null($moduleName = $this->input->getOption('module'))) {
             if (!$this->modules->has($moduleName)) {
                 throw new InvalidArgumentException("Module {$moduleName} not found.");
             }
             $module = $this->modules->get($moduleName);
-            $path = $module->getPath($targetPath ?: 'src/Database/Migrations');
+            $path = $module->getPath('src/Database/Migrations');
             if (!is_dir($path) && !mkdir($path, 0755, true)) {
                 throw new InvalidArgumentException("Can not create directory {$path}");
             }

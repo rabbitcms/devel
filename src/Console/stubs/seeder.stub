@@ -1,0 +1,28 @@
+<?php
+
+namespace DummyNamespace;
+
+use RabbitCMS\Modules\Seeders\ModuleSeeder;
+
+class DummyClass extends ModuleSeeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        //
+    }
+
+    /**
+     * Get required seeders.
+     *
+     * @return string[]
+     */
+    public function requires()
+    {
+        return [];
+    }
+}
