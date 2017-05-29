@@ -1,0 +1,32 @@
+{
+    "name": "rabbitcms/devel",
+    "description": "Development module for RabbitCMS/Modules",
+    "keywords": [
+        "modules",
+        "laravel",
+        "module",
+        "rabbitcms"
+    ],
+    "require": {
+        "php": ">=7.0.9",
+        "laravel/framework": "5.4.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kulyk Dmytro",
+            "email": "lnkvisitor.ts@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RabbitCMS\\Modules\\Devel\\": "src/"
+        }
+    },
+    "extra": {
+        "module": {
+            "name":"modules-devel",
+            "providers": "RabbitCMS\\Modules\\Devel\\ModuleProvider"
+        }
+    }
+}
