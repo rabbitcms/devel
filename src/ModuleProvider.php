@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use RabbitCMS\Modules\Devel\Console\MigrateMakeCommand;
 use RabbitCMS\Modules\Devel\Console\SeederMakeCommand;
-use RabbitCMS\Modules\Managers\Modules;
 
 /**
  * Class ModuleProvider
@@ -31,7 +30,7 @@ class ModuleProvider extends ServiceProvider
     protected function registerMigrateMakeCommand()
     {
         $this->app->extend('command.migrate.make', function ($command, Application $app) {
-            return new MigrateMakeCommand($app['migration.creator'], $app['composer'], $app[Modules::class]);
+            return new MigrateMakeCommand($app['migration.creator'], $app['composer']);
         });
     }
 
@@ -43,7 +42,7 @@ class ModuleProvider extends ServiceProvider
     protected function registerSeederMakeCommand()
     {
         $this->app->extend('command.seeder.make', function ($command, $app) {
-            return new SeederMakeCommand($app['files'], $app['composer'], $app[Modules::class]);
+            return new SeederMakeCommand($app['files'], $app['composer']);
         });
     }
 }

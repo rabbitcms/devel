@@ -6,7 +6,8 @@ namespace RabbitCMS\Modules\Devel\Console;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Support\Composer;
 use InvalidArgumentException;
-use RabbitCMS\Modules\Managers\Modules;
+use RabbitCMS\Modules\Exceptions\ModuleNotFoundException;
+use RabbitCMS\Modules\Facades\Modules;
 
 /**
  * Class MigrateMakeCommand
@@ -27,27 +28,27 @@ class MigrateMakeCommand extends \Illuminate\Database\Console\Migrations\Migrate
      *
      * @param MigrationCreator $creator
      * @param Composer         $composer
-     * @param Modules          $modules
      */
-    public function __construct(MigrationCreator $creator, Composer $composer, Modules $modules)
+    public function __construct(MigrationCreator $creator, Composer $composer)
     {
         $this->signature .= "\n{--module= : The module where the migration file should be created.}";
         parent::__construct($creator, $composer);
-        $this->modules = $modules;
     }
 
     /**
      * Get migration path (either specified by '--path' option or default location).
      *
      * @return string
+     * @throws InvalidArgumentException
      */
     protected function getMigrationPath()
     {
-        if (!is_null($moduleName = $this->input->getOption('module'))) {
-            if (!$this->modules->has($moduleName)) {
-                throw new InvalidArgumentException("Module {$moduleName} not found.");
+        if (null !== $moduleName = $this->input->getOption('module')) {
+            try {
+                $module = Modules::getByName($moduleName);
+            } catch (ModuleNotFoundException $exception) {
+                throw new InvalidArgumentException("Module {$moduleName} not found.", 0, $exception);
             }
-            $module = $this->modules->get($moduleName);
             $path = $module->getPath('src/Database/Migrations');
             if (!is_dir($path) && !mkdir($path, 0755, true)) {
                 throw new InvalidArgumentException("Can not create directory {$path}");

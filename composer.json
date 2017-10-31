@@ -10,7 +10,7 @@
     "require": {
         "php": ">=7.0.9",
         "laravel/framework": "5.4.x | 5.5.x",
-        "rabbitcms/modules": "^1.4.0"
+        "rabbitcms/modules": "^2.0"
     },
     "license": "MIT",
     "authors": [

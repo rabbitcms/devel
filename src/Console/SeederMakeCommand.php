@@ -2,10 +2,9 @@
 declare(strict_types=1);
 namespace RabbitCMS\Modules\Devel\Console;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Composer;
 use InvalidArgumentException;
-use RabbitCMS\Modules\Managers\Modules;
+use RabbitCMS\Modules\Exceptions\ModuleNotFoundException;
+use RabbitCMS\Modules\Facades\Modules;
 
 /**
  * Class SeederMakeCommand
@@ -22,32 +21,25 @@ class SeederMakeCommand extends \Illuminate\Database\Console\Seeds\SeederMakeCom
     protected $signature = 'make:seed {name : The name of the class.}
         {--module= : The module where the migration file should be created.}';
 
-    /**
-     * SeederMakeCommand constructor.
-     *
-     * @param Filesystem $files
-     * @param Composer   $composer
-     * @param Modules    $modules
-     */
-    public function __construct(Filesystem $files, Composer $composer, Modules $modules)
-    {
-        parent::__construct($files, $composer);
-        $this->modules = $modules;
-    }
+
 
     /**
      * Get the destination class path.
      *
-     * @param  string  $name
+     * @param  string $name
+     *
      * @return string
+     * @throws \InvalidArgumentException
      */
     protected function getPath($name)
     {
-        if (!is_null($moduleName = $this->input->getOption('module'))) {
-            if (!$this->modules->has($moduleName)) {
-                throw new InvalidArgumentException("Module {$moduleName} not found.");
+        if (null !== $moduleName = $this->input->getOption('module')) {
+            try {
+                $module = Modules::getByName($moduleName);
+            } catch (ModuleNotFoundException $exception) {
+                throw new InvalidArgumentException("Module {$moduleName} not found.", 0, $exception);
             }
-            return $this->modules->get($moduleName)->getPath("src/Database/Seeders/{$name}.php");
+            return $module->getPath("src/Database/Seeders/{$name}.php");
         }
 
         return parent::getPath($name);
@@ -55,14 +47,16 @@ class SeederMakeCommand extends \Illuminate\Database\Console\Seeds\SeederMakeCom
 
     /**
      * @inheritdoc
+     * @throws \InvalidArgumentException
      */
     protected function rootNamespace()
     {
-        if (!is_null($moduleName = $this->input->getOption('module'))) {
-            if (!$this->modules->has($moduleName)) {
-                throw new InvalidArgumentException("Module {$moduleName} not found.");
+        if (null !== $moduleName = $this->input->getOption('module')) {
+            try {
+                $module = Modules::getByName($moduleName);
+            } catch (ModuleNotFoundException $exception) {
+                throw new InvalidArgumentException("Module {$moduleName} not found.", 0, $exception);
             }
-            $module = $this->modules->get($moduleName);
             return $module->getNamespace().'\\Database\\Seeders';
         }
         return parent::rootNamespace();
