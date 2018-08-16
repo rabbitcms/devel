@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=7.0.9",
-        "laravel/framework": "5.4.x | 5.5.x",
+        "laravel/framework": "^5.4",
         "rabbitcms/modules": "^2.0"
     },
     "license": "MIT",
